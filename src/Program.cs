@@ -1,4 +1,4 @@
-﻿using Dominoes.Helpers;
+using Dominoes.Helpers;
 using Dominoes.Model;
 using OneOf.Types;
 using Spectre.Console;
@@ -48,11 +48,11 @@ namespace Dominoes
                         // Instructions
                         string instructions =
                             "[bold yellow]Instructions:[/] \n" +
-                            " - [bold yellow][[<-]][/] and [bold yellow][[->]][/] to navigate between domino's sides \n" +
-                            " - [bold yellow][[+]][/] or up arrow key to increase the current side value \n" +
+                            " - [bold yellow][[<-]][/] and [bold yellow][[->]][/] to navigate between domino's sides. \n" +
+                            " - [bold yellow][[+]][/] or up arrow key to increase the current side value. \n" +
                             " - [bold yellow][[-]][/] or down arrow key to decrease the current side value.\n" +
-                            " - [bold yellow][[A]][/] to add the current tile to selected tiles, \n" +
-                            " - [bold yellow][[R]][/] to remove the most recently added tile, \n" +
+                            " - [bold yellow][[A]][/] to add the current tile to selected tiles. \n" +
+                            " - [bold yellow][[R]][/] to remove the most recently added tile. \n" +
                             " - [bold yellow][[F]][/] to finish and check for a circular chain.";
 
                         AnsiConsole.MarkupLine(instructions);
