@@ -53,15 +53,17 @@ namespace Dominoes
             if (Dominoes.Count == 0)
                 return new Error<string>("No dominoes to form a circle.");
 
-            // If we only have one  element in the graph we must be able to form a circle
+            // If we only have one element in the graph we must be able to form a circle
             if (_graph.Count == 1)
                 return Dominoes;
+
             // Check that every number has an even degree
             foreach (var kvp in _degree)
             {
                 if (kvp.Value % 2 != 0)
                     return new Error<string>("A circular chain cannot be formed because the degree of some numbers is odd.");
             }
+
             var visited = new HashSet<int>();
             var firstNumber = Dominoes[0].Left;
 
@@ -73,7 +75,7 @@ namespace Dominoes
                 var chain = new List<Domino>();
                 foreach (var domino in Dominoes)
                 {
-                    var visitedDominoes = new HashSet<(Domino, int)>();
+                    var visitedDominoes = new HashSet<Domino>();
                     if (CanFormChain(domino, domino.Left, visitedDominoes, chain, 1))
                     {
                         return chain;
@@ -114,20 +116,25 @@ namespace Dominoes
             return true;
         }
 
-        private bool CanFormChain(Domino currentDomino, int currentNumber, HashSet<(Domino, int)> visited, List<Domino> chain, int count)
+        private bool CanFormChain(Domino currentDomino, int currentNumber, HashSet<Domino> visited, List<Domino> chain, int count)
         {
             if (_graph.Count == 0)
                 return false;
 
-            var dominoIdentifier = (currentDomino, currentNumber);
-            if (visited.Contains(dominoIdentifier))
+            if (visited.Contains(currentDomino))
+            {
+                Debug.WriteLine($"[SKIP] Domino {currentDomino} (already visited).");
                 return false;
+            }
 
-            visited.Add(dominoIdentifier);
+            visited.Add(currentDomino);
             chain.Add(currentDomino);
+
+            Debug.WriteLine($"[USE ] Domino {currentDomino}, chain so far: {string.Join(" -> ", chain.Select(d => d.ToString()))} (count={count}).");
             // Check if can link back to the start
             if (count == Dominoes.Count && currentDomino.Right == chain[0].Left)
             {
+                Debug.WriteLine("[SUCCESS] Circle complete!");
                 return true;
             }
             int nextNumber = (currentDomino.Left == currentNumber) ? currentDomino.Right : currentDomino.Left;
@@ -135,20 +142,27 @@ namespace Dominoes
             // Visit all dominoes that can continue the chain
             foreach (var nextDomino in _graph[nextNumber])
             {
-                // Try without flipping
-                if (!visited.Contains((nextDomino, nextNumber)) && CanFormChain(nextDomino, nextNumber, visited, chain, count + 1))
+                if (!visited.Contains(nextDomino))
                 {
-                    return true;
-                }
-                // Try flipping if needed
-                var flippedDomino = nextDomino.Flip();
-                if (!visited.Contains((flippedDomino, nextNumber)) && CanFormChain(nextDomino.Flip(), nextNumber, visited, chain, count + 1))
-                {
-                    return true;
+                    bool flipped = false;
+                    if (nextDomino.Left != nextNumber)
+                    {
+                        nextDomino.FlipInPlace();
+                        flipped = true;
+                    }
+
+                    Debug.WriteLine($"[TRY ] {nextDomino} as-is, matching side {nextNumber}.");
+                    if (CanFormChain(nextDomino, nextNumber, visited, chain, count + 1))
+                        return true;
+
+                    if (flipped)
+                    {
+                        nextDomino.FlipInPlace();
+                    }
                 }
             }
-
-            visited.Remove(dominoIdentifier);
+            Debug.WriteLine($"[BACK] Backtracking from {currentDomino}.");
+            visited.Remove(currentDomino);
             chain.RemoveAt(Math.Max(0, chain.Count - 1)); // Remove the domino from the chain if we can't continue
             return false;
         }

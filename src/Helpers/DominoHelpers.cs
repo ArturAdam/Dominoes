@@ -5,9 +5,11 @@ namespace Dominoes.Helpers
 {
     public static class DominoHelpers
     {
-        public static Domino Flip(this Domino domino)
+        public static Domino FlipInPlace(this Domino domino)
         {
-            return new(domino.Right, domino.Left);
+            (domino.Left, domino.Right) = (domino.Right, domino.Left);
+
+            return domino;
         }
 
         public static string ToVisualString(this IEnumerable<Domino> dominoes, int width)
@@ -86,7 +88,7 @@ namespace Dominoes.Helpers
                 {
                     gridStr += grid[i, j] == ' ' ? "  " : "o ";
                 }
-                gridStr = gridStr.TrimEnd() + "\n";
+                gridStr = gridStr + "\n";
             }
 
             return gridStr.TrimEnd();
@@ -97,42 +99,42 @@ namespace Dominoes.Helpers
             switch (count)
             {
                 case 1:
-                    grid[1, 1] = 'o'; // Center
+                    grid[1, 1] = 'o';
                     break;
 
                 case 2:
-                    grid[0, 0] = 'o'; // Top-left
-                    grid[2, 2] = 'o'; // Bottom-right
+                    grid[0, 2] = 'o';
+                    grid[2, 0] = 'o';
                     break;
 
                 case 3:
-                    grid[0, 0] = 'o'; // Top-left
-                    grid[1, 1] = 'o'; // Center
-                    grid[2, 2] = 'o'; // Bottom-right
+                    grid[0, 2] = 'o';
+                    grid[1, 1] = 'o';
+                    grid[2, 0] = 'o';
                     break;
 
                 case 4:
-                    grid[0, 0] = 'o'; // Top-left
-                    grid[0, 2] = 'o'; // Top-right
-                    grid[2, 0] = 'o'; // Bottom-left
-                    grid[2, 2] = 'o'; // Bottom-right
+                    grid[0, 0] = 'o';
+                    grid[0, 2] = 'o';
+                    grid[2, 0] = 'o';
+                    grid[2, 2] = 'o';
                     break;
 
                 case 5:
-                    grid[0, 0] = 'o'; // Top-left
-                    grid[0, 2] = 'o'; // Top-right
-                    grid[1, 1] = 'o'; // Center
-                    grid[2, 0] = 'o'; // Bottom-left
-                    grid[2, 2] = 'o'; // Bottom-right
+                    grid[0, 0] = 'o';
+                    grid[0, 2] = 'o';
+                    grid[1, 1] = 'o';
+                    grid[2, 0] = 'o';
+                    grid[2, 2] = 'o';
                     break;
 
                 case 6:
-                    grid[0, 0] = 'o'; // Top-left
-                    grid[0, 1] = 'o'; // Top-center
-                    grid[0, 2] = 'o'; // Top-right
-                    grid[2, 0] = 'o'; // Bottom-left
-                    grid[2, 1] = 'o'; // Bottom-center
-                    grid[2, 2] = 'o'; // Bottom-right
+                    grid[0, 0] = 'o';
+                    grid[0, 1] = 'o';
+                    grid[0, 2] = 'o';
+                    grid[2, 0] = 'o';
+                    grid[2, 1] = 'o';
+                    grid[2, 2] = 'o';
                     break;
             }
         }

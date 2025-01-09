@@ -30,9 +30,8 @@ namespace Dominoes
                 if (choiceKey == ConsoleKey.R)
                 {
                     var random = new Random();
-                    int length = random.Next(0, 101); // from 1 to 100
 
-                    for (int i = 0; i < length; i++)
+                    for (int i = 0; i < 6; i++)
                     {
                         selectedTiles.Add(new Domino(random.Next(0, 7), random.Next(0, 7)));
                     }
@@ -48,11 +47,13 @@ namespace Dominoes
 
                         // Instructions
                         string instructions =
-                            "[bold yellow]Instructions:[/] " +
-                            "Use [bold yellow][[+]][/] to increase, [bold yellow][[-]][/] to decrease the current side value.\n" +
-                            "Press [bold yellow]'A'[/] to add the current tile to selected tiles, " +
-                            "[bold yellow]'R'[/] to remove the most recently added tile, " +
-                            "[bold yellow]'F'[/] to finish and check for a circular chain.";
+                            "[bold yellow]Instructions:[/] \n" +
+                            " - [bold yellow][[<-]][/] and [bold yellow][[->]][/] to navigate between domino's sides \n" +
+                            " - [bold yellow][[+]][/] or up arrow key to increase the current side value \n" +
+                            " - [bold yellow][[-]][/] or down arrow key to decrease the current side value.\n" +
+                            " - [bold yellow][[A]][/] to add the current tile to selected tiles, \n" +
+                            " - [bold yellow][[R]][/] to remove the most recently added tile, \n" +
+                            " - [bold yellow][[F]][/] to finish and check for a circular chain.";
 
                         AnsiConsole.MarkupLine(instructions);
 
@@ -69,7 +70,7 @@ namespace Dominoes
                         AnsiConsole.MarkupLine(currentTile);
 
                         // Another line showing tile.ToString()
-                        AnsiConsole.MarkupLine($"[bold green]{tile}[/]");
+                        AnsiConsole.MarkupLine($"[bold green]{tile.ToVisualString()}[/]");
 
                         // Show the selected tiles so far
                         string selectedTilesString = selectedTiles.ToVisualString(Console.WindowWidth);
@@ -90,30 +91,30 @@ namespace Dominoes
                                 cursorPosition = RIGHT;
                                 break;
 
-                            case ConsoleKey.Add or ConsoleKey.OemPlus:
+                            case ConsoleKey.Add or ConsoleKey.OemPlus or ConsoleKey.UpArrow:
                                 if (cursorPosition == LEFT && tile.Left < 6)
                                 {
-                                    tile = tile with { Left = tile.Left + 1 };
+                                    tile.Left++;
                                 }
                                 else if (cursorPosition == RIGHT && tile.Right < 6)
                                 {
-                                    tile = tile with { Right = tile.Right + 1 };
+                                    tile.Right++;
                                 }
                                 break;
 
-                            case ConsoleKey.Subtract or ConsoleKey.OemMinus:
+                            case ConsoleKey.Subtract or ConsoleKey.OemMinus or ConsoleKey.DownArrow:
                                 if (cursorPosition == LEFT && tile.Left > 0)
                                 {
-                                    tile = tile with { Left = tile.Left - 1 };
+                                    tile.Left--;
                                 }
                                 else if (cursorPosition == RIGHT && tile.Right > 0)
                                 {
-                                    tile = tile with { Right = tile.Right - 1 };
+                                    tile.Right--;
                                 }
                                 break;
 
                             case ConsoleKey.A:
-                                selectedTiles.Add(tile);
+                                selectedTiles.Add(new Domino(tile.Left, tile.Right));
                                 break;
 
                             case ConsoleKey.R:

@@ -2,9 +2,19 @@ using Dominoes.Helpers;
 
 namespace Dominoes.Model
 {
-    public sealed record Domino(DominoValue Left, DominoValue Right)
+    public sealed class Domino
     {
-        public override string ToString()
+        public Domino(DominoValue left, DominoValue right)
+        {
+            Left = left;
+            Right = right;
+        }
+        public DominoValue Left { get; set; }
+        public DominoValue Right { get; set; }
+
+        public override string ToString() => $"[{Left}|{Right}]";
+
+        public string ToVisualString()
         {
             var leftSide = DominoHelpers.GenerateDotGrid(Left);
             var rightSide = DominoHelpers.GenerateDotGrid(Right);
